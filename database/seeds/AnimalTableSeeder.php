@@ -11,6 +11,26 @@ class AnimalTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\User::class, 1)->create();
+        collect([
+            [
+                'name' => 'dog',
+                'title' => 'Собака'
+            ],
+            [
+                'name' => 'cat',
+                'title' => 'Кот'
+            ],
+            [
+                'name' => 'raccoon',
+                'title' => 'Енот'
+            ],
+            [
+                'name' => 'penguin',
+                'title' => 'Пингвин'
+            ],
+        ])->each(function ($data) {
+            factory(\App\Models\Animal::class, 1)->create($data);
+        });
+
     }
 }

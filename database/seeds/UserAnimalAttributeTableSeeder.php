@@ -11,6 +11,18 @@ class UserAnimalAttributeTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\User::class, 1)->create();
+        $userAnimals = \App\Models\UserAnimal::query()->get();
+        $attributes = \App\Models\Attribute::query()->get();
+
+        $userAnimals->each(function ($userAnimal) use ($attributes) {
+            $attributes->each(function ($attribute) use ($userAnimal) {
+                /**
+                 * @var \App\Models\UserAnimal $userAnimal
+                 * @var \App\Models\Attribute $attribute
+                 */
+                $userAnimal->animalAttributes()->create([ 'attribute_id' => $attribute->id ]);
+            });
+        });
+
     }
 }

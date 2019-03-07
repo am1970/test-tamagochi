@@ -72,5 +72,13 @@ class UserAnimal extends Model
         return $this->belongsTo(Animal::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function animalAttributes()
+    {
+        return $this->hasMany(UserAnimalAttribute::class, 'user_animal_id', 'id');
+    }
+
     #endregion
 }

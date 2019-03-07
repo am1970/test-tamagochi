@@ -11,6 +11,6 @@ class UserAnimalTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\User::class, 1)->create();
+        factory(\App\Models\UserAnimal::class, round(\App\Models\User::query()->count()/2))->create();
     }
 }
