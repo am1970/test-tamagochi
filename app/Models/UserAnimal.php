@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * Relationships
  * @property User $user
  * @property Animal $animal
+ * @property UserAnimalAttribute[] $animalAttributes
  */
 class UserAnimal extends Model
 {

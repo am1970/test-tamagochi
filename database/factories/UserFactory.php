@@ -30,7 +30,7 @@ $factory->define(UserAnimal::class, function (Faker $faker) {
     do {
         /** @var User $user */
         $user = (new User())->query()->inRandomOrder()->first();
-    } while ($user->animals()->exists());
+    } while ($user->animal()->exists());
 
     return [
         'animal_id' => (new \App\Models\Animal())->query()->inRandomOrder()->first()->id,

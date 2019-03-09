@@ -18,7 +18,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property Carbon $created_at
  *
  * Relationships
- * @property Animal[] $animals
+ * @property Animal $animal
  */
 class User extends Authenticatable
 {
@@ -73,11 +73,11 @@ class User extends Authenticatable
     #endregion
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\hasOne
      */
-    public function animals()
+    public function animal()
     {
-        return $this->hasMany(UserAnimal::class, 'user_id', 'id');
+        return $this->hasOne(UserAnimal::class, 'user_id', 'id');
     }
 
     #region
