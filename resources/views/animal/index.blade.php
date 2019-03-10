@@ -5,10 +5,10 @@
         <div class="row justify-content-center">
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header">Choice Animal</div>
+                    <div class="card-header">Your animal</div>
 
-                    <div class="card-body" id="choice-animal">
-                        <animal-list></animal-list>
+                    <div class="card-body" id="animal">
+                        <animal :animal="{{$animal}}"></animal>
                     </div>
                 </div>
             </div>
