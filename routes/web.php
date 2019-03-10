@@ -18,9 +18,10 @@ Auth::routes();
 Route::get('/animals', 'AnimalController@animals')->name('animals');
 
 Route::middleware('auth')->prefix('animal')->group(function () {
-    Route::get('/', 'AnimalController@animal')->name('animal');
-    Route::post('/', 'AnimalController@store')->name('animal-store');
     Route::get('/choice', 'AnimalController@animalChoice')->name('animal-choice');
+    Route::post('/', 'AnimalController@store')->name('animal-store');
+
+    Route::get('/', 'AnimalController@animal')->name('animal');
 
 });
 

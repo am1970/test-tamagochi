@@ -44,7 +44,7 @@ class AnimalController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        $animal = $user->animal()->create([ 'animal_id' => $request->animal_id ]);
+        $animal = $user->animal()->create($request->all());
 
         Attribute::all()->each(function ($attribute) use($animal) {
             /** @var UserAnimal $animal */

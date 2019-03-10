@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Auth;
 
 class LoginController extends Controller
 {
@@ -36,4 +38,34 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    /**
+     * Get the post register / login redirect path.
+     *
+     * @return string
+     */
+    public function redirectPath()
+    {
+        if (method_exists($this, 'redirectTo')) {
+            return $this->redirectTo();
+        }
+
+        $redirectPath = property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
+
+        if($this->existsUserAnimal()) {
+            return route('animal');
+        }
+
+        return $redirectPath;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function existsUserAnimal()
+    {
+        return Auth::user()->animal()->exists();
+    }
+
+
 }
