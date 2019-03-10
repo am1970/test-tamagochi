@@ -1804,11 +1804,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      errors: [],
       selected: null,
-      animals: []
+      animals: [],
+      name: null
     };
   },
   mounted: function mounted() {
@@ -1822,15 +1829,27 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   methods: {
-    save: function save(selected) {
+    checkForm: function checkForm() {
+      if (this.selected) {
+        this.save();
+      }
+
+      this.errors = [];
+
+      if (!this.selected) {
+        this.errors.push('Selected required.');
+      }
+    },
+    save: function save() {
       axios.post('/animal', {
-        animal_id: selected
+        animal_id: this.selected,
+        name: this.name
       }).then(function (res) {
         if (res.data.success == true) {
           window.location.href = '/animal';
         }
       }).catch(function (e) {
-        console.log(e);
+        console.log(e.response.data.message);
       });
     }
   }
@@ -36910,51 +36929,91 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "animal-list" }, [
     _c(
-      "select",
+      "form",
       {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.selected,
-            expression: "selected"
-          }
-        ],
+        attrs: { id: "animal-choice-form" },
         on: {
-          change: function($event) {
-            var $$selectedVal = Array.prototype.filter
-              .call($event.target.options, function(o) {
-                return o.selected
-              })
-              .map(function(o) {
-                var val = "_value" in o ? o._value : o.value
-                return val
-              })
-            _vm.selected = $event.target.multiple
-              ? $$selectedVal
-              : $$selectedVal[0]
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.checkForm($event)
           }
         }
       },
-      _vm._l(_vm.animals, function(animal) {
-        return _c("option", { domProps: { value: animal.id } }, [
-          _vm._v(_vm._s(animal.title))
-        ])
-      }),
-      0
-    ),
-    _vm._v(" "),
-    _c("br"),
-    _c("br"),
-    _vm._v(" "),
-    _c("input", {
-      attrs: { type: "button", value: "Choice" },
-      on: {
-        click: function($event) {
-          return _vm.save(_vm.selected)
-        }
-      }
-    })
+      [
+        _c("label", { attrs: { for: "selectedAnimal" } }, [
+          _vm._v("Choice animal:")
+        ]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model.number",
+                value: _vm.selected,
+                expression: "selected",
+                modifiers: { number: true }
+              }
+            ],
+            attrs: { id: "selectedAnimal", required: "" },
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return _vm._n(val)
+                  })
+                _vm.selected = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              }
+            }
+          },
+          _vm._l(_vm.animals, function(animal) {
+            return _c("option", { domProps: { value: animal.id } }, [
+              _vm._v(_vm._s(animal.title))
+            ])
+          }),
+          0
+        ),
+        _c("br"),
+        _vm._v(" "),
+        _c("label", { attrs: { for: "name" } }, [_vm._v("Name:")]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model.trim",
+              value: _vm.name,
+              expression: "name",
+              modifiers: { trim: true }
+            }
+          ],
+          attrs: { id: "name", type: "text" },
+          domProps: { value: _vm.name },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.name = $event.target.value.trim()
+            },
+            blur: function($event) {
+              return _vm.$forceUpdate()
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("br"),
+        _vm._v(" "),
+        _c("input", { attrs: { type: "submit", value: "Submit" } })
+      ]
+    )
   ])
 }
 var staticRenderFns = []
