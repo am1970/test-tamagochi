@@ -20,7 +20,11 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('tamagochi-app', require('./components/TamagochiApp.vue').default);
+// Vue.component('tamagochi-app', require('./components/TamagochiApp.vue').default);
+
+Vue.component('animal-list', require('./components/AnimalList.vue').default);
+
+Vue.component('animal', require('./components/Animal.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
