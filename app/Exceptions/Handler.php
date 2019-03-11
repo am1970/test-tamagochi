@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Exceptions\QueryExceptions\QueryException;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -29,8 +30,9 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
-     * @return void
+     * @param Exception $exception
+     * @return mixed|void
+     * @throws Exception
      */
     public function report(Exception $exception)
     {
@@ -46,6 +48,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if($exception instanceof QueryException) {
+            return $exception->sendResponseError();
+        }
+
         return parent::render($request, $exception);
     }
 }

@@ -85,6 +85,8 @@ class LoginController extends Controller
 
         $redirectPath = property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
 
+        return $redirectPath;
+
         if($this->existsUserAnimal()) {
             return route('animal');
         }
