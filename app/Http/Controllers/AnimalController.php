@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\QueryExceptions\UserAnimal\NotCreateUserAnimalException;
+use App\Exceptions\QueryExceptions\UserAnimalAttribute\NotCreateUserAnimalAttributeException;
+use App\Http\Requests\UserAnimal\CreateUserAnimalRequest;
 use App\Models\Animal;
 use App\Models\Attribute;
 use App\Models\User;
 use App\Models\UserAnimal;
-use Illuminate\Http\Request;
 use Auth;
 
 class AnimalController extends Controller
@@ -17,11 +19,14 @@ class AnimalController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function animalChoice()
+    public function choice()
     {
-        return view('animal-choice.animal-choice');
+        return view('user-animal.choice');
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function animals()
     {
         $animals = Animal::query()->get();
@@ -29,6 +34,9 @@ class AnimalController extends Controller
         return response()->json($animals);
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function animal()
     {
         /** @var User $user */
@@ -36,25 +44,36 @@ class AnimalController extends Controller
 
         $animal = $user->animal()->with(['animal','animalAttributes.attribute'])->first();
 
-        return view('animal.index', ['animal' => $animal]);
+        return view('user-animal.animal', ['animal' => $animal]);
     }
 
-    public function store(Request $request)
+    /**
+     * @param CreateUserAnimalRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws NotCreateUserAnimalException
+     * @throws NotCreateUserAnimalAttributeException
+     */
+    public function store(CreateUserAnimalRequest $request)
     {
         /** @var User $user */
         $user = Auth::user();
 
-        $animal = $user->animal()->create($request->all());
-
-        Attribute::all()->each(function ($attribute) use($animal) {
+        try {
             /** @var UserAnimal $animal */
-            $animal->animalAttributes()->create(['attribute_id' => $attribute->id]);
-        });
-
-        if($animal) {
-            return response()->json([ 'success' => true ]);
+            $animal = $user->animal()->create($request->all());
+        } catch (\Exception $e) {
+            throw new NotCreateUserAnimalException();
         }
 
-        return response()->json([ 'success' => false ]);
+        Attribute::all()->each(function ($attribute) use($animal) {
+            try {
+                /** @var Attribute $attribute */
+                $animal->animalAttributes()->create(['attribute_id' => $attribute->id]);
+            } catch (\Exception $e) {
+                throw new NotCreateUserAnimalAttributeException();
+            }
+        });
+
+        return response()->json([ 'success' => true ]);
     }
 }
