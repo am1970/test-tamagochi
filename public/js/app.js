@@ -1809,13 +1809,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       errors: [],
-      selected: null,
+      animal_id: null,
       animals: [],
-      name: null
+      name: null,
+      animal: null
     };
   },
   mounted: function mounted() {
@@ -1830,26 +1835,41 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     checkForm: function checkForm() {
-      if (this.selected) {
+      if (this.animal_id) {
         this.save();
       }
 
-      this.errors = [];
+      if (!this.animal_id) {
+        this.errors.push('Select animal, please. This field is required.');
+      }
 
-      if (!this.selected) {
-        this.errors.push('Selected required.');
+      if (this.errors.length) {
+        this.showError();
       }
     },
     save: function save() {
+      // this.selected = 10;
       axios.post('/animal', {
-        animal_id: this.selected,
+        animal_id: this.animal_id,
         name: this.name
       }).then(function (res) {
-        if (res.data.success == true) {
+        if (res.data.success) {
           window.location.href = '/animal';
         }
       }).catch(function (e) {
-        console.log(e.response.data.message);
+        if (!e.response.data.success) {
+          alert(e.response.data.errors);
+        }
+      });
+    },
+    showError: function showError() {
+      alert(this.errors);
+    },
+    setAnimal: function setAnimal() {
+      var _this2 = this;
+
+      this.animal = this.animals.find(function (animal) {
+        return animal.id === _this2.animal_id;
       });
     }
   }
@@ -36941,7 +36961,7 @@ var render = function() {
       },
       [
         _c("label", { attrs: { for: "selectedAnimal" } }, [
-          _vm._v("Choice animal:")
+          _vm._v("Select animal:")
         ]),
         _vm._v(" "),
         _c(
@@ -36951,26 +36971,29 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model.number",
-                value: _vm.selected,
-                expression: "selected",
+                value: _vm.animal_id,
+                expression: "animal_id",
                 modifiers: { number: true }
               }
             ],
             attrs: { id: "selectedAnimal", required: "" },
             on: {
-              change: function($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function(o) {
-                    return o.selected
-                  })
-                  .map(function(o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return _vm._n(val)
-                  })
-                _vm.selected = $event.target.multiple
-                  ? $$selectedVal
-                  : $$selectedVal[0]
-              }
+              change: [
+                function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return _vm._n(val)
+                    })
+                  _vm.animal_id = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                },
+                _vm.setAnimal
+              ]
             }
           },
           _vm._l(_vm.animals, function(animal) {
@@ -36980,6 +37003,20 @@ var render = function() {
           }),
           0
         ),
+        _c("br"),
+        _vm._v(" "),
+        !!this.animal_id
+          ? _c("div", { staticClass: "image-animal" }, [
+              _c("img", {
+                attrs: {
+                  src: this.animal.image_path,
+                  width: "200",
+                  height: "200"
+                }
+              })
+            ])
+          : _vm._e(),
+        _vm._v(" "),
         _c("br"),
         _vm._v(" "),
         _c("label", { attrs: { for: "name" } }, [_vm._v("Name:")]),

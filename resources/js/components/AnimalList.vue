@@ -1,10 +1,14 @@
 <template>
     <div class="animal-list">
         <form id="animal-choice-form" @submit.prevent="checkForm">
-            <label for="selectedAnimal">Choice animal:</label>
-            <select id="selectedAnimal" v-model.number="selected" required>
+            <label for="selectedAnimal">Select animal:</label>
+            <select id="selectedAnimal" @change="setAnimal" v-model.number="animal_id" required>
                 <option v-for="animal in animals" :value="animal.id">{{animal.title}}</option>
             </select><br>
+            <div class="image-animal" v-if="!!this.animal_id">
+                <img :src="this.animal.image_path" width="200" height="200">
+            </div>
+            <br>
             <label for="name">Name:</label>
             <input  id="name" v-model.trim="name" type="text">
             <br>
@@ -18,9 +22,10 @@
         data() {
             return {
                 errors: [],
-                selected: null,
+                animal_id: null,
                 animals: [],
                 name: null,
+                animal: null,
             }
         },
         mounted() {
@@ -35,26 +40,37 @@
         },
         methods: {
             checkForm: function () {
-                if (this.selected) {
+                if (this.animal_id) {
                     this.save();
                 }
 
-                this.errors = [];
+                if (!this.animal_id) {
+                    this.errors.push('Select animal, please. This field is required.');
+                }
 
-                if (!this.selected) {
-                    this.errors.push('Selected required.');
+                if(this.errors.length) {
+                    this.showError();
                 }
             },
             save: function() {
-                axios.post('/animal', {animal_id: this.selected, name: this.name})
+                // this.selected = 10;
+                axios.post('/animal', {animal_id: this.animal_id, name: this.name})
                     .then((res) => {
-                        if(res.data.success == true) {
+                        if(res.data.success) {
                             window.location.href = '/animal';
                         }
                     })
                     .catch((e) => {
-                        console.log(e.response.data.message);
+                        if(!e.response.data.success) {
+                            alert(e.response.data.errors);
+                        }
                     });
+            },
+            showError: function () {
+                alert(this.errors);
+            },
+            setAnimal: function () {
+                this.animal = this.animals.find(animal => animal.id === this.animal_id);
             },
         }
     }
