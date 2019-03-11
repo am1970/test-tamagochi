@@ -8,7 +8,7 @@
                     <div class="card-header">Your animal</div>
 
                     <div class="card-body" id="animal">
-                        <animal :animal="{{$animal}}"></animal>
+                        <animal :animal="{{$animal}}" :max_attribute_value="{{config('game.max_attribute_value')}}"></animal>
                     </div>
                 </div>
             </div>
