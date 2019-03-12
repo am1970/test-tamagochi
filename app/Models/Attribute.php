@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property string $title
  * @property string $description
+ * @property integer $timeout
  * @property Carbon $updated_at
  * @property Carbon $created_at
  */
@@ -24,7 +25,7 @@ class Attribute extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'title', 'description'
+        'name', 'title', 'description', 'timeout'
     ];
 
     /**
@@ -41,7 +42,8 @@ class Attribute extends Model
         'id' => 'integer',
         'name' => 'string',
         'title' => 'string',
-        'description' => 'string'
+        'description' => 'string',
+        'timeout' => 'integer',
     ];
 
     #endregion

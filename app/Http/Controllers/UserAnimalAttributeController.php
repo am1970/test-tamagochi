@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SendAttributeValue;
 use App\Events\UpdateAttribute;
 use App\Http\Requests\UserAnimalAttribute\UpdateValueRequest;
 use App\Models\UserAnimalAttribute;
@@ -9,22 +10,19 @@ use Auth;
 
 class UserAnimalAttributeController extends Controller
 {
-
     public function update(UpdateValueRequest $request, UserAnimalAttribute $attribute)
     {
         $value = config('game.max_attribute_value');
 
-        if(!$request->is_full) {
+        if(!$request->is_full && $attribute->value) {
             $value = $attribute->value-1;
         }
 
-        $result = $attribute->update(['value' => $value]);
+        $attribute->update(['value' => $value]);
 
-        if($result) {
-            broadcast(new UpdateAttribute($attribute));
-        }
+        broadcast(new UpdateAttribute($attribute))->toOthers();
 
-        return response()->json(['attribute' => $attribute, 'success' => true]);
+        return response()->json(['attribute' => $attribute->load('attribute'), 'success' => true]);
     }
 
 }

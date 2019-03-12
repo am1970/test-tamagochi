@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\UserAnimal;
 use App\Models\UserAnimalAttribute;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
@@ -22,7 +23,6 @@ class UpdateAttribute implements ShouldBroadcast
 
     /**
      * Create a new event instance.
-     *
      * @param UserAnimalAttribute $attribute
      * @return void
      */
@@ -38,11 +38,6 @@ class UpdateAttribute implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('update-attribute');
-    }
-
-    public function broadcastWith()
-    {
-        return [ 'attribute' => $this->attribute ];
+        return new PrivateChannel('animals.' . $this->attribute->userAnimal->id);
     }
 }

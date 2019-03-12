@@ -14,19 +14,19 @@ class AnimalTableSeeder extends Seeder
         collect([
             [
                 'name' => 'dog',
-                'title' => 'Собака'
+                'title' => 'Dog'
             ],
             [
                 'name' => 'cat',
-                'title' => 'Кот'
+                'title' => 'Cat'
             ],
             [
                 'name' => 'raccoon',
-                'title' => 'Енот'
+                'title' => 'Raccoon'
             ],
             [
                 'name' => 'penguin',
-                'title' => 'Пингвин'
+                'title' => 'Penguin'
             ],
         ])->each(function ($data) {
             factory(\App\Models\Animal::class, 1)->create($data);

@@ -8,7 +8,7 @@
         </div>
         <div v-for="attribute in animal.animal_attributes">
             <br>
-            <Attribute :attribute="attribute" :max_attribute_value="max_attribute_value"></Attribute>
+            <Attribute :attribute="attribute" :animal="animal" :max_attribute_value="max_attribute_value"></Attribute>
 
         </div>
 

@@ -1909,8 +1909,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-var _this2 = undefined;
-
 //
 //
 //
@@ -1928,6 +1926,10 @@ var _this2 = undefined;
     max_attribute_value: {
       type: Number,
       default: 0
+    },
+    animal: {
+      type: Object,
+      default: null
     }
   },
   data: function data() {
@@ -1936,31 +1938,45 @@ var _this2 = undefined;
     };
   },
   mounted: function mounted() {
-    var _this = this;
-
     this.current_value = this.attribute.value;
-    Echo.private('update-attribute').listen('UpdateAttribute', function (e) {
-      console.log(e);
-
-      _this.handelIncoming(e.attribute);
-    });
+    this.listenAttribute();
+    this.listenAnimal();
+  },
+  created: function created() {
+    this.startInterval();
   },
   methods: {
     updateValue: function updateValue() {
+      var _this = this;
+
       var full = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-      axios.put('/animal/attribute/' + _this2.attribute.id, {
+      axios.put('/animal/attribute/' + this.attribute.id, {
         is_full: full
       }).then(function (res) {
         if (res.data.success) {
-          _this2.current_value = res.data.value;
+          _this.current_value = res.data.attribute.value;
         }
       }).catch(function (e) {});
     },
-    handelIncoming: function handelIncoming(attribute) {
-      _this2.current_value = attribute.value;
-    },
     getButtonTitle: function getButtonTitle() {
       return "Update " + this.attribute.attribute.title;
+    },
+    startInterval: function startInterval() {
+      var _this2 = this;
+
+      setInterval(function () {
+        _this2.updateValue();
+      }, this.attribute.attribute.timeout * 1000);
+    },
+    listenAttribute: function listenAttribute() {
+      Echo.private('attributes.' + this.attribute.id).listen('Attributes', function (e) {
+        console.log(e);
+      });
+    },
+    listenAnimal: function listenAnimal() {
+      Echo.private('animals.' + this.animal.id).listen('UpdateAttribute', function (e) {
+        console.log(e);
+      });
     }
   }
 });
@@ -67918,6 +67934,7 @@ var render = function() {
             _c("Attribute", {
               attrs: {
                 attribute: attribute,
+                animal: _vm.animal,
                 max_attribute_value: _vm.max_attribute_value
               }
             })
@@ -80340,8 +80357,8 @@ if (token) {
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
-  key: "",
-  cluster: "mt1",
+  key: "907dc75fd55fec343cf3",
+  cluster: "eu",
   encrypted: true
 });
 

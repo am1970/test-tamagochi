@@ -16,6 +16,10 @@
             max_attribute_value: {
                 type: Number,
                 default: 0
+            },
+            animal: {
+                type: Object,
+                default: null
             }
         },
         data() {
@@ -25,30 +29,40 @@
         },
         mounted() {
             this.current_value = this.attribute.value;
-
-            Echo.private('update-attribute')
-                .listen('UpdateAttribute', (e) => {
-                    console.log(e);
-                    this.handelIncoming(e.attribute);
-                });
-
+            this.listenAttribute();
+            this.listenAnimal();
+        },
+        created() {
+            this.startInterval();
         },
         methods: {
-            updateValue: (full = false) => {
+            updateValue: function(full = false) {
                 axios.put('/animal/attribute/'+this.attribute.id, {is_full: full})
                     .then((res) => {
                         if(res.data.success) {
-                            this.current_value = res.data.value;
+                            this.current_value = res.data.attribute.value;
                         }
-                    }).catch((e) => {
-
-                });
-            },
-            handelIncoming: (attribute) => {
-                this.current_value = attribute.value;
+                    }).catch((e) => {});
             },
             getButtonTitle: function () {
                 return "Update "+this.attribute.attribute.title;
+            },
+            startInterval: function() {
+                setInterval(() => {
+                    this.updateValue();
+                }, this.attribute.attribute.timeout*1000)
+            },
+            listenAttribute: function () {
+                Echo.private('attributes.' + this.attribute.id)
+                    .listen('Attributes', (e) => {
+                        console.log(e);
+                    });
+            },
+            listenAnimal: function () {
+                Echo.private('animals.' + this.animal.id)
+                    .listen('UpdateAttribute', (e) => {
+                        console.log(e);
+                    });
             }
         }
     }
