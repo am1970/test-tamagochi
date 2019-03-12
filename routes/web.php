@@ -23,6 +23,8 @@ Route::middleware('auth')->prefix('animal')->group(function () {
 
     Route::get('/', 'AnimalController@animal')->name('animal');
 
+    Route::put('/attribute/{attribute}', 'UserAnimalAttributeController@update')->name('update-user-animal-attribute');
+
 });
 
 

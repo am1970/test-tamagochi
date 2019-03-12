@@ -18,6 +18,7 @@ class CreateAttributesTable extends Migration
             $table->string('name', 60)->unique();
             $table->string('title', 60);
             $table->string('description')->nullable();
+            $table->integer('timeout');
             $table->timestamps();
 
             $table->index(['name']);
