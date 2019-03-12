@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Attributes;
+use App\Events\UpdateAttribute;
 use App\Exceptions\QueryExceptions\UserAnimal\NotCreateUserAnimalException;
 use App\Exceptions\QueryExceptions\UserAnimalAttribute\NotCreateUserAnimalAttributeException;
 use App\Http\Requests\UserAnimal\CreateUserAnimalRequest;
@@ -43,6 +45,8 @@ class AnimalController extends Controller
         $user = Auth::user();
 
         $animal = $user->animal()->with(['animal','animalAttributes.attribute'])->first();
+
+        broadcast(new Attributes($animal))->toOthers();
 
         return view('user-animal.animal', ['animal' => $animal]);
     }

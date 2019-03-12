@@ -9,6 +9,8 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import BootstrapVue from 'bootstrap-vue'
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -25,6 +27,10 @@ window.Vue = require('vue');
 Vue.component('animal-list', require('./components/AnimalList.vue').default);
 
 Vue.component('animal', require('./components/Animal.vue').default);
+
+
+
+Vue.use(BootstrapVue);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
