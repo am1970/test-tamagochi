@@ -10,17 +10,9 @@
 | used to check if an authenticated user can listen to the channel.
 |
 */
-use App\Models\UserAnimalAttribute;
+use App\Models\UserAnimal;
 
-Broadcast::channel('attributes.{attribute_id}', function ($user, $attribute_id) {
-    /**
-     * @var \App\Models\User $user
-     * @var \App\Models\UserAnimalAttribute $attribute
-     */
-    return (int)$user->id === (int)UserAnimalAttribute::find($attribute_id)->userAnimal()->first()->user_id;
-});
-
-Broadcast::channel('animals.{animal_id}', function ($user, $animal_id) {
-    return (int)\App\Models\UserAnimal::query()->find($animal_id)->user_id === (int)$user->id;
+Broadcast::channel('animal.{id}', function ($user, $id) {
+    return $user->id == UserAnimal::query()->find($id)->first()->user_id;
 });
 
